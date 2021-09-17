@@ -11,16 +11,23 @@ interface Repo {
 
 export const ReposPage = () => {
   const [repos, setRepos] = useState<Repo[]>([]);
+  const [error, setError] = useState("");
   const history = useHistory();
   const location = useLocation<{ username: string }>();
 
   useEffect(() => {
     const fetchRepos = async (username: string) => {
-      const res = await getInstance().get(`/users/${username}/repos`);
-      setRepos(res.data);
+      try {
+        const res = await getInstance().get(`/users/${username}/repos`);
+        setRepos(res.data);
+      } catch (e) {
+        setError(
+          "There was an issue with the request.. check the provided username maybe?"
+        );
+      }
     };
 
-    if (location.state) {
+    if (location.state?.username) {
       fetchRepos(location.state.username);
     } else {
       history.push("/");
@@ -32,6 +39,7 @@ export const ReposPage = () => {
       <button onClick={() => history.push("/")} className="back">
         ←
       </button>
+      {error ? <div>{error}</div> : null}
       {repos.map((repo) => (
         <div key={repo.id}>
           <Link
