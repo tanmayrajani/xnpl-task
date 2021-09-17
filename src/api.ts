@@ -5,7 +5,7 @@ export const createInstance = () => {
   instance = axios.create({
     baseURL: "https://api.github.com",
     headers: {
-      Authorization: "token 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"
+      Authorization: `token ${process.env.GTHB_TOKEN}`
     }
   });
 };
